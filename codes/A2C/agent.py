@@ -1,27 +1,23 @@
 #!/usr/bin/env python
 # coding=utf-8
 '''
-Author: John
+Author: JiangJi
 Email: johnjim0816@gmail.com
-Date: 2020-11-03 20:47:09
-LastEditor: John
-LastEditTime: 2020-11-08 22:16:29
+Date: 2021-05-03 22:16:08
+LastEditor: JiangJi
+LastEditTime: 2021-05-03 22:23:48
 Discription: 
 Environment: 
 '''
-from model import ActorCritic
 import torch.optim as optim
-
+from A2C.model import ActorCritic
 class A2C:
-    def __init__(self,n_states, n_actions, hidden_dim=256,device="cpu",lr = 3e-4):
-        self.device = device
-        self.gamma = 0.99
-        self.model = ActorCritic(n_states, n_actions, hidden_dim=hidden_dim).to(device)
-        self.optimizer = optim.Adam(self.model.parameters(),lr=lr)
-    def choose_action(self, state):
-        dist, value = self.model(state)
-        action = dist.sample()
-        return action
+    def __init__(self,state_dim,action_dim,cfg) -> None:
+        self.gamma = cfg.gamma
+        self.device = cfg.device
+        self.model = ActorCritic(state_dim, action_dim, cfg.hidden_size).to(self.device)
+        self.optimizer = optim.Adam(self.model.parameters())
+
     def compute_returns(self,next_value, rewards, masks):
         R = next_value
         returns = []
@@ -29,5 +25,3 @@ class A2C:
             R = rewards[step] + self.gamma * R * masks[step]
             returns.insert(0, R)
         return returns
-    def update(self):
-        pass

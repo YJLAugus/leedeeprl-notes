@@ -70,7 +70,7 @@ MDP 就是序列决策这样一个经典的表达方式。MDP 也是强化学习
 
 ![](img/3.5.png)Q: 为什么可以用未来的总收益来评价当前这个动作是好是坏?
 
-A: 举个例子，假设一辆车在路上，当前是红灯，我们直接走的收益就很低，因为违反交通规则，这就是当前的单步收益。可是如果我们这是一辆救护车，我们正在运送病人，把病人快速送达医院的收益非常的高，而且越快你的收益越大。在这种情况下，我们很可能应该要闯红灯，因为未来的远期收益太高了。这也是为什么强化学习需要去学习远期的收益，因为在现实世界中奖励往往是延迟的，是有 delay 的。所以我们一般会从当前状态开始，把后续有可能会收到所有收益加起来计算当前动作的 Q 的价值，让 Q 的价值可以真正地代表当前这个状态下，动作的真正的价值。
+A: 举个例子，假设一辆车在路上，当前是红灯，我们直接走的收益就很低，因为违反交通规则，这就是当前的单步收益。可是如果我们这是一辆救护车，我们正在运送病人，把病人快速送达医院的收益非常的高，而且越快你的收益越大。在这种情况下，我们很可能应该要闯红灯，因为未来的远期收益太高了。这也是为什么强化学习需要去学习远期的收益，因为在现实世界中奖励往往是延迟的。所以我们一般会从当前状态开始，把后续有可能会收到所有收益加起来计算当前动作的 Q 的价值，让 Q 的价值可以真正地代表当前这个状态下，动作的真正的价值。
 
 ![](img/3.6.png)
 
@@ -136,7 +136,7 @@ $$
 
 * 我们把每个轨迹的 return 进行平均，就可以知道某一个策略下面对应状态的价值。
 
-* MC 是用 `empirical mean` return 的方法来估计。
+* MC 是用 `经验平均回报(empirical mean return)` 的方法来估计。
 
 * MC 方法不需要 MDP 的转移函数和奖励函数，并且不需要像动态规划那样用 bootstrapping  的方法。
 
@@ -146,14 +146,14 @@ $$
 
 * 上图是 MC 算法的概括。
 * 为了得到评估 $v(s)$，我们进行了如下的步骤：
-  * 在每个 episode 中，如果在时间步 t 状态 s 被访问了，那么
+  * 在每个回合中，如果在时间步 t 状态 s 被访问了，那么
     * 状态 s 的访问数 $N(s)$ 增加 1，
     * 状态 s 的总的回报 $S(s)$  增加 $G_t$。
   * 状态 s 的价值可以通过 return 的平均来估计，即 $v(s)=S(s)/N(s)$。
 
 * 根据大数定律，只要我们得到足够多的轨迹，就可以趋近这个策略对应的价值函数。
 
-假设现在有样本 $x_1,x_2,\cdots$，我们可以把 empirical mean 转换成 `incremental mean` 的形式，如下式所示：
+假设现在有样本 $x_1,x_2,\cdots$，我们可以把经验均值(empirical mean)转换成 `增量均值(incremental mean)` 的形式，如下式所示：
 $$
 \begin{aligned}
 \mu_{t} &=\frac{1}{t} \sum_{j=1}^{t} x_{j} \\
@@ -170,7 +170,7 @@ $$
 其中：
 
 * $x_t- \mu_{t-1}$ 是残差
-* $\frac{1}{t}$ 类似于 learning rate
+* $\frac{1}{t}$ 类似于学习率(learning rate)
 
 当我们得到 $x_t$，就可以用上一时刻的值来更新现在的值。
 
@@ -211,7 +211,7 @@ MC 是通过 empirical mean return （实际得到的收益）来更新它，对
 
 ![](img/3.10.png)
 
-**为了让大家更好地理解`时序差分(Temporal Difference,TD)`这种更新方法，这边给出它的物理意义。**我们先理解一下巴普洛夫的条件反射实验，这个实验讲的是小狗会对盆里面的食物无条件产生刺激，分泌唾液。一开始小狗对于铃声这种中性刺激是没有反应的，可是我们把这个铃声和食物结合起来，每次先给它响一下铃，再给它喂食物，多次重复之后，当铃声响起的时候，小狗也会开始流口水。盆里的肉可以认为是强化学习里面那个延迟的 reward，声音的刺激可以认为是有 reward 的那个状态之前的一个状态。多次重复实验之后，最后的这个 reward 会强化小狗对于这个声音的条件反射，它会让小狗知道这个声音代表着有食物，这个声音对于小狗来说也就有了价值，它听到这个声音也会流口水。
+为了让大家更好地理解`时序差分(Temporal Difference,TD)`这种更新方法，这边给出它的物理意义。我们先理解一下巴普洛夫的条件反射实验，这个实验讲的是小狗会对盆里面的食物无条件产生刺激，分泌唾液。一开始小狗对于铃声这种中性刺激是没有反应的，可是我们把这个铃声和食物结合起来，每次先给它响一下铃，再给它喂食物，多次重复之后，当铃声响起的时候，小狗也会开始流口水。盆里的肉可以认为是强化学习里面那个延迟的 reward，声音的刺激可以认为是有 reward 的那个状态之前的一个状态。多次重复实验之后，最后的这个 reward 会强化小狗对于这个声音的条件反射，它会让小狗知道这个声音代表着有食物，这个声音对于小狗来说也就有了价值，它听到这个声音也会流口水。
 
 ![](img/3.11.png)
 
@@ -221,32 +221,46 @@ MC 是通过 empirical mean return （实际得到的收益）来更新它，对
 
 在人的身上是可以建立多级的条件反射的，举个例子，比如说一般我们遇到熊都是这样一个顺序：看到树上有熊爪，然后看到熊之后，突然熊发怒，扑过来了。经历这个过程之后，我们可能最开始看到熊才会瑟瑟发抖，后面就是看到树上有熊爪就已经有害怕的感觉了。也就说在不断的重复试验之后，下一个状态的价值，它是可以不断地去强化影响上一个状态的价值的。
 
-![](img/3.12.png)
-
-**为了让大家更加直观感受下一个状态影响上一个状态**，我们推荐这个网站：[Temporal Difference Learning Gridworld Demo](https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_td.html)。
+为了让大家更加直观感受下一个状态影响上一个状态(状态价值迭代)，我们推荐这个网站：[Temporal Difference Learning Gridworld Demo](https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_td.html)。
 
 ![](img/3.13.png ':size=500')
 
 * 我们先初始化一下，然后开始时序差分的更新过程。
-* 在训练的过程中，你会看到这个小黄球在不断地试错，在探索当中会先迅速地发现有 reward 的地方。最开始的时候，只是这些有 reward 的格子才有价值。当不断地重复走这些路线的时候，这些有价值的格子可以去慢慢地影响它附近的格子的价值。
-* 反复训练之后，这些有 reward 的格子周围的格子的状态就会慢慢地被强化。强化就是当它收敛到最后一个最优的状态了，这些价值最终收敛到一个最优的情况之后，那个小黄球就会自动地知道，就是我一直往价值高的地方走，就能够走到能够拿到 reward 的地方。
+* 在训练的过程中，这个小黄球在不断地试错，在探索当中会先迅速地发现有奖励的地方。最开始的时候，只是这些有奖励的格子才有价值。当不断地重复走这些路线的时候，这些有价值的格子可以去慢慢地影响它附近的格子的价值。
+* 反复训练之后，这些有奖励的格子周围的格子的状态就会慢慢地被强化。强化就是当它收敛到最后一个最优的状态了，这些价值最终收敛到一个最优的情况之后，那个小黄球就会自动地知道，就是我一直往价值高的地方走，就能够走到能够拿到奖励的地方。
 
-![](img/TD_1.png)
+**下面开始正式介绍 TD 方法。**
 
 * TD 是介于 MC 和 DP 之间的方法。
-
-* TD 是 model free 的，不需要 MDP 的转移矩阵和奖励函数。
-* TD 可以从不完整的 episode 中学习，结合了 bootstrapping 的思想。
+* TD 是 model-free 的，不需要 MDP 的转移矩阵和奖励函数。
+* TD 可以从**不完整的** episode 中学习，结合了 bootstrapping 的思想。
 
 ![](img/TD_2.png)
 
 * 上图是 TD 算法的框架。
+
 * 目的：对于某个给定的策略，在线(online)地算出它的价值函数，即一步一步地(step-by-step)算。
-* 最简单的算法是 `TD(0)`，每往前走一步，就做一步 bootstrapping，用得到的 estimated return 来更新上一时刻的值 
-* Estimated return $R_{t+1}+\gamma v(S_{t+1})$ 被称为 `TD target`，TD target 是带衰减的未来收益的总和。TD target 由两部分组成：
+
+* 最简单的算法是 `TD(0)`，每往前走一步，就做一步 bootstrapping，用得到的估计回报(estimated return)来更新上一时刻的值。 
+
+* 估计回报 $R_{t+1}+\gamma v(S_{t+1})$ 被称为 `TD target`，TD target 是带衰减的未来收益的总和。TD target 由两部分组成：
   * 走了某一步后得到的实际奖励：$R_{t+1}$， 
-  * 我们利用了 bootstrapping 的方法，通过之前的估计来估计 $v(S_{t+1})$  ，然后加了一个折扣系数，即 $\gamma v(S_{t+1})$。
+  * 我们利用了 bootstrapping 的方法，通过之前的估计来估计 $v(S_{t+1})$  ，然后加了一个折扣系数，即 $\gamma v(S_{t+1})$，具体过程如下式所示：
+  
+  $$
+  \begin{aligned}
+  v(s)&=\mathbb{E}\left[G_{t} \mid s_{t}=s\right] \\ 
+  &=\mathbb{E}\left[R_{t+1}+\gamma R_{t+2}+\gamma^{2} R_{t+3}+\ldots \mid s_{t}=s\right]  \\
+  &=\mathbb{E}\left[R_{t+1}|s_t=s\right] +\gamma \mathbb{E}\left[R_{t+2}+\gamma R_{t+3}+\gamma^{2} R_{t+4}+\ldots \mid s_{t}=s\right]\\
+  &=R(s)+\gamma \mathbb{E}[G_{t+1}|s_t=s] \\
+  &=R(s)+\gamma \mathbb{E}[v(s_{t+1})|s_t=s]\\
+  \end{aligned}
+  $$
+  
+* TD目标是估计有两个原因：它对期望值进行采样，并且使用当前估计 V 而不是真实 $v_{\pi}$。
+
 * `TD error` $\delta=R_{t+1}+\gamma v(S_{t+1})-v(S_t)$。
+
 * 可以类比于 Incremental Monte-Carlo 的方法，写出如下的更新方法：
 
 $$
@@ -262,30 +276,21 @@ $$
 ![](img/TD_3.png)
 
 * TD 只执行了一步，状态的值就更新。
-
 * MC 全部走完了之后，到了终止状态之后，再更新它的值。
 
-![](img/TD_4.png)
+接下来，进一步比较下 TD 和 MC。
 
-* TD 可以 online learning，每走一步就可以更新，效率高。
+* TD 可以在线学习(online learning)，每走一步就可以更新，效率高。
 * MC 必须等游戏结束才可以学习。
 
-
-
-*  TD 可以从不完整序列上进行学习。
-* TD 只能从完整的序列上进行学习。
-
-
+* TD 可以从不完整序列上进行学习。
+* MC 只能从完整的序列上进行学习。
 
 * TD 可以在连续的环境下（没有终止）进行学习。
 * MC 只能在有终止的情况下学习。
 
-
-
 * TD 利用了马尔可夫性质，在马尔可夫环境下有更高的学习效率。
-* MC 没有假设环境具有马尔可夫性质，利用采样的价值来估计某一个状态的价值，在不是马尔可夫的环境下更加有效
-
-
+* MC 没有假设环境具有马尔可夫性质，利用采样的价值来估计某一个状态的价值，在不是马尔可夫的环境下更加有效。
 
 **举个例子来解释 TD 和 MC 的区别，**
 
@@ -316,15 +321,13 @@ $$
 G_{t}^{n}=R_{t+1}+\gamma R_{t+2}+\ldots+\gamma^{n-1} R_{t+n}+\gamma^{n} v\left(S_{t+n}\right)
 $$
 
-* 得到 TD target 之后，我们用 incremental learning 的方法来更新状态的价值：
+* 得到 TD target 之后，我们用增量学习(incremental learning)的方法来更新状态的价值：
 
 $$
 v\left(S_{t}\right) \leftarrow v\left(S_{t}\right)+\alpha\left(G_{t}^{n}-v\left(S_{t}\right)\right)
 $$
 
 ### Bootstrapping and Sampling for DP,MC and TD
-
-![](img/comparison_1.png)
 
 * Bootstrapping：更新时使用了估计：
   * MC 没用 bootstrapping，因为它是根据实际的 return 来更新。
@@ -393,15 +396,13 @@ Policy iteration 由两个步骤组成：
 
 为了确保 MC 方法能够有足够的探索，我们使用了 $\varepsilon$-greedy exploration。
 
-$\varepsilon\text{-greedy}$ 的意思是说，我们有 $1-\varepsilon$ 的概率会按照 Q-function 来决定 action，通常 $\varepsilon$ 就设一个很小的值， $1-\varepsilon$ 可能是 90%，也就是 90% 的概率会按照 Q-function 来决定 action，但是你有 10% 的机率是随机的。通常在实现上 $\varepsilon$ 会随着时间递减。在最开始的时候。因为还不知道那个 action 是比较好的，所以你会花比较大的力气在做 exploration。接下来随着 training 的次数越来越多。已经比较确定说哪一个 Q 是比较好的。你就会减少你的 exploration，你会把 $\varepsilon$ 的值变小，主要根据 Q-function 来决定你的 action，比较少做 random，这是 $\varepsilon\text{-greedy}$。
+$\varepsilon\text{-greedy}$ 的意思是说，我们有 $1-\varepsilon$ 的概率会按照 Q-function 来决定 action，通常 $\varepsilon$ 就设一个很小的值， $1-\varepsilon$ 可能是 90%，也就是 90% 的概率会按照 Q-function 来决定 action，但是你有 10% 的机率是随机的。通常在实现上 $\varepsilon$ 会随着时间递减。在最开始的时候。因为还不知道那个 action 是比较好的，所以你会花比较大的力气在做 exploration。接下来随着训练的次数越来越多。已经比较确定说哪一个 Q 是比较好的。你就会减少你的 exploration，你会把 $\varepsilon$ 的值变小，主要根据 Q-function 来决定你的 action，比较少做 random，这是 $\varepsilon\text{-greedy}$。
 
 ![](img/model_free_control_6.png)
 
 当我们使用 MC 和 $\varepsilon$-greedy 探索这个形式的时候，我们可以确保价值函数是单调的，改进的。
 
-![](img/model_free_control_7.png)上图是 MC with $\varepsilon$-greedy exploration 算法的伪代码。
-
-![](img/model_free_control_8.png)
+![](img/model_free_control_7.png)上图是带 $\varepsilon$-greedy 探索的 MC 算法的伪代码。
 
 与 MC 相比，TD 有如下几个优势：
 
@@ -409,7 +410,7 @@ $\varepsilon\text{-greedy}$ 的意思是说，我们有 $1-\varepsilon$ 的概�
 * 能够在线学习。
 * 能够从不完整的序列学习。
 
-所以我们可以把 TD 也放到 control loop 里面去估计 Q-table，再采取这个 $\varepsilon$-greedy improvement。这样就可以在 episode 没结束的时候来更新已经采集到的状态价值。  
+所以我们可以把 TD 也放到 control loop 里面去估计 Q-table，再采取这个 $\varepsilon$-greedy policy improvement。这样就可以在 episode 没结束的时候来更新已经采集到的状态价值。  
 
 ![](img/bias_variance.png ':size=450')
 
@@ -488,7 +489,7 @@ Sarsa 是一种 on-policy 策略。Sarsa 优化的是它实际执行的策略，
 
 ![](img/off_policy_learning.png)
 
-再举个例子。比如环境是一个波涛汹涌的大海，但 learning policy 太胆小了，没法直接跟环境去学习，所以我们有了 exploratory policy，exploratory policy 是一个不畏风浪的海盗，他非常激进，可以在环境中探索。他有很多经验，可以把这些经验写成稿子，然后喂给这个 learning policy。Learning policy 可以通过这个稿子来进行学习。
+再举个例子，如上图所示，比如环境是一个波涛汹涌的大海，但 learning policy 太胆小了，没法直接跟环境去学习，所以我们有了 exploratory policy，exploratory policy 是一个不畏风浪的海盗，他非常激进，可以在环境中探索。他有很多经验，可以把这些经验写成稿子，然后喂给这个 learning policy。Learning policy 可以通过这个稿子来进行学习。
 
 在 off-policy learning 的过程中，我们这些轨迹都是 behavior policy 跟环境交互产生的，产生这些轨迹后，我们使用这些轨迹来更新 target policy $\pi$。
 
@@ -497,8 +498,6 @@ Sarsa 是一种 on-policy 策略。Sarsa 优化的是它实际执行的策略，
 * 我们可以利用 exploratory policy 来学到一个最佳的策略，学习效率高；
 * 可以让我们学习其他 agent 的行为，模仿学习，学习人或者其他 agent 产生的轨迹；
 * 重用老的策略产生的轨迹。探索过程需要很多计算资源，这样的话，可以节省资源。
-
-![](img/Q-learning.png)
 
 Q-learning 有两种 policy：behavior policy 和 target policy。
 
@@ -515,7 +514,7 @@ R_{t+1}+\gamma Q\left(S_{t+1}, A^{\prime}\right) &=R_{t+1}+\gamma Q\left(S_{t+1}
 &=R_{t+1}+\gamma \max _{a^{\prime}} Q\left(S_{t+1}, a^{\prime}\right)
 \end{aligned}
 $$
-接着我们可以把 Q-learning update 写成 incremental learning 的形式，TD target 就变成 max 的值，即
+接着我们可以把 Q-learning 更新写成增量学习的形式，TD target 就变成 max 的值，即
 $$
 Q\left(S_{t}, A_{t}\right) \leftarrow Q\left(S_{t}, A_{t}\right)+\alpha\left[R_{t+1}+\gamma \max _{a} Q\left(S_{t+1}, a\right)-Q\left(S_{t}, A_{t}\right)\right]
 $$
@@ -523,7 +522,7 @@ $$
 
  **我们再通过对比的方式来进一步理解 `Q-learning`。Q-learning 是 off-policy 的时序差分学习方法，Sarsa 是 on-policy 的时序差分学习方法。**
 
-* Sarsa 在更新 Q 表格的时候，它用到的 A' 。我要获取下一个 Q 值的时候，A' 是下一个 step 一定会执行的 action。这个 action 有可能是 $\varepsilon$-greedy 方法 sample 出来的值，也有可能是 max Q 对应的 action，也有可能是随机动作，但这是它实际执行的那个动作。
+* Sarsa 在更新 Q 表格的时候，它用到的 A' 。我要获取下一个 Q 值的时候，A' 是下一个 step 一定会执行的 action。这个 action 有可能是 $\varepsilon$-greedy 方法采样出来的值，也有可能是 max Q 对应的 action，也有可能是随机动作，但这是它实际执行的那个动作。
 * 但是 Q-learning 在更新 Q 表格的时候，它用到这个的 Q 值 $Q(S',a)$ 对应的那个 action ，它不一定是下一个 step 会执行的实际的 action，因为你下一个实际会执行的那个 action 可能会探索。
 * Q-learning 默认的 next action 不是通过 behavior policy 来选取的，Q-learning 直接看 Q-table，取它的 max 的这个值，它是默认 A' 为最优策略选的动作，所以 Q-learning 在学习的时候，不需要传入 A'，即 $A_{t+1}$  的值。
 
@@ -544,11 +543,9 @@ Sarsa 是用自己的策略产生了 S,A,R,S',A' 这一条轨迹。然后拿着 
 对 Q-learning 进行逐步地拆解的话，跟 Sarsa 唯一一点不一样就是并不需要提前知道 $A_2$ ，我就能更新 $Q(S_1,A_1)$ 。在训练一个 episode 这个流程图当中，Q-learning 在 learn 之前它也不需要去拿到 next action $A'$，它只需要前面四个 $ (S,A,R,S')$ ，这跟 Sarsa 很不一样。 
 ## On-policy vs. Off-policy
 
-![](img/3.20.png)
-
 **总结一下 on-policy 和 off-policy 的区别。**
 
-* Sarsa 是一个典型的 on-policy 策略，它只用了一个 policy $\pi$ 。如果 policy 采用 $\varepsilon$-greedy 算法的话，它需要兼顾探索，为了兼顾探索和利用，它训练的时候会显得有点胆小。它在解决悬崖问题的时候，会尽可能地离悬崖边上远远的，确保说哪怕自己不小心探索了一点，也还是在安全区域内。此外，因为采用的是 $\varepsilon$-greedy 算法，策略会不断改变($\varepsilon$ 会不断变小)，所以策略不稳定。
+* Sarsa 是一个典型的 on-policy 策略，它只用了一个 policy $\pi$，它只用了一个 policy $\pi$，它不仅使用策略 $\pi$ 学习，还使用策略 $\pi$ 与环境交互产生经验。如果 policy 采用 $\varepsilon$-greedy 算法的话，它需要兼顾探索，为了兼顾探索和利用，它训练的时候会显得有点胆小。它在解决悬崖问题的时候，会尽可能地离悬崖边上远远的，确保说哪怕自己不小心探索了一点，也还是在安全区域内。此外，因为采用的是 $\varepsilon$-greedy 算法，策略会不断改变($\varepsilon$ 会不断变小)，所以策略不稳定。
 * Q-learning 是一个典型的 off-policy 的策略，它有两种策略：target policy 和 behavior policy。它分离了目标策略跟行为策略。Q-learning 就可以大胆地用 behavior policy 去探索得到的经验轨迹来去优化目标策略，从而更有可能去探索到最优的策略。Behavior policy 可以采用 $\varepsilon$-greedy 算法，但 target policy 采用的是 greedy 算法，直接根据 behavior policy 采集到的数据来采用最优策略，所以 Q-learning 不需要兼顾探索。
 * 比较 Q-learning 和 Sarsa 的更新公式可以发现，Sarsa 并没有选取最大值的 max 操作，因此，
   * Q-learning 是一个非常激进的算法，希望每一步都获得最大的利益；
@@ -563,6 +560,8 @@ Sarsa 是用自己的策略产生了 S,A,R,S',A' 这一条轨迹。然后拿着 
 
 ## References
 
+* [百度强化学习](https://aistudio.baidu.com/aistudio/education/lessonvideo/460292)
+
 * [强化学习基础 David Silver 笔记](https://zhuanlan.zhihu.com/c_135909947)
 * [Intro to Reinforcement Learning (强化学习纲要）](https://github.com/zhoubolei/introRL)
 * [Reinforcement Learning: An Introduction (second edition)](https://book.douban.com/subject/30323890/)
@@ -570,7 +569,6 @@ Sarsa 是用自己的策略产生了 S,A,R,S',A' 这一条轨迹。然后拿着 
 * [神经网络与深度学习](https://nndl.github.io/)
 * [机器学习](https://book.douban.com/subject/26708119//)
 * [Understanding the Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
-
 
 
 
